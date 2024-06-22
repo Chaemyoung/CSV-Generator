@@ -28,13 +28,15 @@ def get_ai_response(column_names: str, number_of_rows: int):
 
 # Function to save the response as a CSV file
 def save_as_csv(response: str, filename="output.csv"):
-    lines = response.strip().split('\n')
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        for line in lines:
-            writer.writerow(line.split(','))
-    print(f"CSV file saved as {filename}")
-
+    try:
+        lines = response.strip().split('\n')
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for line in lines:
+                writer.writerow(line.split(','))
+        print(f"CSV file saved as {filename}")
+    except Exception as e:
+        print(f"Error saving file: {str(e)}")
 
 def main():
     print("Hello, welcome to the CSV Generator!")
