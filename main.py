@@ -46,7 +46,9 @@ def save_as_csv(response, filename="output.csv"):
 
 def main():
     print("Hello, welcome to the CSV Generator!")
-    prompt = get_user_input()
+    file_name = input("Enter the name of the file: ")
+    column_name = input("Enter the name of the column: ")
+    number_of_rows = input("Enter the number of rows: ")    
     response = get_ai_response(prompt)
     print("\nAI Response:")
     print(response)
