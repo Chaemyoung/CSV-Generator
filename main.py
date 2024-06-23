@@ -72,12 +72,15 @@ def main():
     """
     Drive the program.
     """
-    print("Hello, welcome to the CSV Generator!")
+    print("Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!")
 
-    column_names = str(input("Enter the names of the column (comma-separated): "))
+    # Get the column names from the user
+    column_names = str(input("Enter the column names, separated by commas (e.g., name, age, email): "))
 
+    # Get the number of rows from the user
     while True:
-        number_of_rows = input("Enter the number of rows: ")
+        number_of_rows = input("Enter the number of rows for the CSV file (e.g., 10): ")
+        # Check if the input is a valid number
         if number_of_rows.isdigit():
             number_of_rows = int(number_of_rows)
             break
@@ -93,14 +96,17 @@ def main():
     print("\nAI Response:")
     print(response)
 
+    # Ask the user if they want to save the response as a CSV file
     while True:
         save_choice = input("\nDo you want to save this as a CSV file? (y/n): ").lower()
         if save_choice in ['y', 'n']:
             break
         else:
             print("Invalid input. Please enter 'y' or 'n'.")
-            
+
+    # Save the response as a CSV file        
     if save_choice.lower() == 'y':
+        # Get the filename from the user
         filename = str(input("Enter the filename (default: output.csv): ")) or "output.csv"
         save_as_csv(response, filename)
 
