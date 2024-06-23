@@ -29,6 +29,10 @@ def get_ai_response(column_names: str, number_of_rows: int):
 
 # Function to save the response as a CSV file
 def save_as_csv(response: str, filename="output.csv"):
+    # Ensure the filename ends with .csv
+    if not filename.lower().endswith('.csv'):
+        filename += '.csv'
+
     try:
         lines = response.strip().split('\n')
         with open(filename, 'w', newline='') as csvfile:
