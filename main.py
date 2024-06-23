@@ -1,19 +1,25 @@
 import os
 import csv
+import logging
 from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 # Get the API key from the environment variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+if not OPENAI_API_KEY:
+    logging.error("OPENAI_API_KEY environment variable not set.")
+    exit(1)
 
 # Create an OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-
 # Get the ai reponse in csv file format
-def get_ai_response(column_names: str, number_of_rows: int):
+def get_ai_response(column_names: str, number_of_rows: int) -> str:
     """
     Get the AI response for the given column names and number of rows.
 
@@ -36,11 +42,12 @@ def get_ai_response(column_names: str, number_of_rows: int):
         )
         return completion.choices[0].message.content
     except Exception as e:
+        logging.error(f"An error occurred: {str(e)}")
         return f"An error occurred: {str(e)}"
 
 
 # Function to save the response as a CSV file
-def save_as_csv(response: str, filename="output.csv"):
+def save_as_csv(response: str, filename="output.csv") -> None:
     """
     Save the response as a CSV file.
 
@@ -65,18 +72,20 @@ def save_as_csv(response: str, filename="output.csv"):
                 writer.writerow(line.split(','))
         print(f"CSV file saved as {filename}")
     except Exception as e:
-        print(f"Error saving file: {str(e)}")
+        logging.error(f"Error saving file: {str(e)}")
 
-
-def main():
+def main() -> None:
     """
     Drive the program.
     """
     print("Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!")
 
     # Get the column names from the user
-    column_names = str(input("Enter the column names, separated by commas (e.g., name, age, email): "))
-
+    column_names = input("Enter the column names, separated by commas (e.g., name, age, email): ").strip()
+    if not column_names:
+        logging.error("Column names cannot be empty.")
+        return
+    
     # Get the number of rows from the user
     while True:
         number_of_rows = input("Enter the number of rows for the CSV file (e.g., 10): ")
@@ -107,7 +116,7 @@ def main():
     # Save the response as a CSV file        
     if save_choice.lower() == 'y':
         # Get the filename from the user
-        filename = str(input("Enter the filename (default: output.csv): ")) or "output.csv"
+        filename = str(input("Enter the filename (default: output.csv): ")).strip() or "output.csv"
         save_as_csv(response, filename)
 
 
