@@ -14,6 +14,18 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Get the ai reponse in csv file format
 def get_ai_response(column_names: str, number_of_rows: int):
+    """
+    Get the AI response for the given column names and number of rows.
+
+    A function to get the AI response for the given column names and number of rows.
+
+    :param column_names: The string, names of the columns in the CSV file
+    :param number_of_rows: The int, number of rows to generate
+    :precondition: column_names must be a string
+    :precondition: number_of_rows must be an integer
+    :postcondition: Get the AI response in CSV format
+    :return: The AI response in CSV format
+    """
     try:
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -29,6 +41,18 @@ def get_ai_response(column_names: str, number_of_rows: int):
 
 # Function to save the response as a CSV file
 def save_as_csv(response: str, filename="output.csv"):
+    """
+    Save the response as a CSV file.
+
+    A function to save the response as a CSV file.
+
+    :param response: The string, the response to save
+    :param filename: The string, the filename to save the response as (default: output.csv)
+    :precondition: response must be a string
+    :precondition: filename must be a string
+    :postcondition: Save the response as a CSV file
+    :return: None
+    """
     # Ensure the filename ends with .csv
     if not filename.lower().endswith('.csv'):
         filename += '.csv'
@@ -45,6 +69,9 @@ def save_as_csv(response: str, filename="output.csv"):
 
 
 def main():
+    """
+    Drive the program.
+    """
     print("Hello, welcome to the CSV Generator!")
 
     column_names = str(input("Enter the names of the column (comma-separated): "))
