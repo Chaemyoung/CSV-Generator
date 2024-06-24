@@ -1,23 +1,21 @@
 import os
 import csv
 import logging
+import art
 from dotenv import load_dotenv
 from openai import OpenAI
 
 # ANSI escape codes for colors
 RESET = "\033[0m"
 BOLD = "\033[1m"
-UNDERLINE = "\033[4m"
 
 # Text Colors
-BLACK = "\033[30m"
 RED = "\033[31m"
 GREEN = "\033[32m"
 YELLOW = "\033[33m"
 BLUE = "\033[34m"
 MAGENTA = "\033[35m"
 CYAN = "\033[36m"
-WHITE = "\033[37m"
 
 load_dotenv()
 
@@ -85,31 +83,32 @@ def save_as_csv(response: str, filename="output.csv") -> None:
             writer = csv.writer(csvfile)
             for line in lines:
                 writer.writerow(line.split(','))
-        print(f"CSV file saved as {filename}")
+        print(f"CSV file saved as {YELLOW}{BOLD}{filename}{RESET}")
     except Exception as e:
-        logging.error(f"Error saving file: {str(e)}")
+        logging.error(f"{RED}Error saving file: {str(e)}{RESET}")
 
 def main() -> None:
     """
     Drive the program.
     """
-    print("Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!")
+    print(GREEN + art.program_title + RESET)
+    print(f"\n{GREEN}Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!{RESET}")
 
     # Get the column names from the user
-    column_names = input("Enter the column names, separated by commas. Include data types - optional, and Identity(starting_num, increment) - optional. (e.g., name(varchar), age(int, IDENTITY(1,1)), email): ").strip()
+    column_names = input(f"Enter the {BLUE}{BOLD}column names, separated by commas{RESET}. Include {BLUE}{BOLD}data types - optional{RESET}, and {BLUE}{BOLD}Identity(starting_num, increment) - optional.{RESET} {CYAN}(e.g., name(varchar), age(int, IDENTITY(1,1)), email){RESET}:").strip()
     if not column_names:
-        logging.error("Column names cannot be empty.")
+        logging.error(f"{RED}Column names cannot be empty.{RESET}")
         return
     
     # Get the number of rows from the user
     while True:
-        number_of_rows = input("Enter the number of rows for the CSV file (e.g., 10): ")
+        number_of_rows = input(f"Enter {BLUE}{BOLD}the number of rows{RESET} for the CSV file (e.g., 10): ")
         # Check if the input is a valid number
         if number_of_rows.isdigit():
             number_of_rows = int(number_of_rows)
             break
         else:
-            print("Invalid input. Please enter a valid number.")
+            print(f"{RED}Invalid input. Please enter a valid number.{RESET}")
 
     try:
         response = get_ai_response(column_names, number_of_rows)
@@ -117,21 +116,21 @@ def main() -> None:
         print(e)
         return
         
-    print("\nAI Response:")
+    print(f"{MAGENTA}\nAI Response:\n{RESET}")
     print(response)
 
     # Ask the user if they want to save the response as a CSV file
     while True:
-        save_choice = input("\nDo you want to save this as a CSV file? (y/n): ").lower()
+        save_choice = input(f"{CYAN}{BOLD}\nDo you want to save this as a CSV file? (y/n): {RESET}").lower()
         if save_choice in ['y', 'n']:
             break
         else:
-            print("Invalid input. Please enter 'y' or 'n'.")
+            print(f"{RED}Invalid input. Please enter 'y' or 'n'.{RESET}")
 
     # Save the response as a CSV file        
     if save_choice.lower() == 'y':
         # Get the filename from the user
-        filename = str(input("Enter the filename (default: output.csv): ")).strip() or "output.csv"
+        filename = str(input("Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
         save_as_csv(response, filename)
 
 
