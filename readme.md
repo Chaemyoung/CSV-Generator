@@ -1,10 +1,10 @@
 # CSV Generator
 
 ## Description
-CSV Generator is a Python-based tool that allows users to generate customized CSV files using AI. By collecting user inputs for column names and the number of rows, the AI generates tables accordingly. Users can then review and download the tables as CSV files. The tool leverages Python and the OpenAI API.
+CSV Generator is a Python-based tool that allows users to generate customized CSV files using AI. By collecting user inputs for column names, data type, increments, the number of rows and file name, the AI generates tables accordingly. Users can then review and download the tables as CSV files. The tool leverages Python and the OpenAI API.
 
 ## Features
-- **Interactive User Input**: Prompts the user to enter column names and the number of rows for the CSV file.
+- **Interactive User Input**: Prompts the user to enter column names, data types, increments, the number of rows and file name for the CSV file.
 - **AI-Generated Data**: Uses OpenAI API to generate data based on user-specified column names and number of rows.
 - **CSV File Generation**: Saves the generated data as a CSV file based on user confirmation.
 - **Error Handling**: Includes robust error handling for invalid inputs and exceptions during data generation and file saving.
@@ -48,12 +48,22 @@ CSV Generator is a Python-based tool that allows users to generate customized CS
 
 ## Example
 ```
+
+
+░█████╗░░██████╗██╗░░░██╗  ░██████╗░███████╗███╗░░██╗███████╗██████╗░░█████╗░████████╗░█████╗░██████╗░
+██╔══██╗██╔════╝██║░░░██║  ██╔════╝░██╔════╝████╗░██║██╔════╝██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗
+██║░░╚═╝╚█████╗░╚██╗░██╔╝  ██║░░██╗░█████╗░░██╔██╗██║█████╗░░██████╔╝███████║░░░██║░░░██║░░██║██████╔╝
+██║░░██╗░╚═══██╗░╚████╔╝░  ██║░░╚██╗██╔══╝░░██║╚████║██╔══╝░░██╔══██╗██╔══██║░░░██║░░░██║░░██║██╔══██╗
+╚█████╔╝██████╔╝░░╚██╔╝░░  ╚██████╔╝███████╗██║░╚███║███████╗██║░░██║██║░░██║░░░██║░░░╚█████╔╝██║░░██║
+░╚════╝░╚═════╝░░░░╚═╝░░░  ░╚═════╝░╚══════╝╚═╝░░╚══╝╚══════╝╚═╝░░╚═╝╚═╝░░╚═╝░░░╚═╝░░░░╚════╝░╚═╝░░╚═╝
+
 Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!
 
-Enter the column names, separated by commas (e.g., name, age, email): name, age, occupation
+Enter the column names, separated by commas. Include data types - optional, and Identity(starting_num, increment) - optional. (e.g., name(varchar), age(int, IDENTITY(1,1)), email): name(varchar), age(int), occupation(varchar)
 Enter the number of rows for the CSV file (e.g., 10): 5
 
 AI Response:
+
 name,age,occupation
 John Doe,32,Software Engineer
 Jane Smith,28,Teacher
