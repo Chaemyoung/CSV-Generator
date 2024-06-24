@@ -36,8 +36,8 @@ def get_ai_response(column_names: str, number_of_rows: int) -> str:
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant. Provide responses in CSV format when tables are requested."},
-                {"role": "user", "content": " Please provide the response in CSV format." + "Inside the CSV format file, I want to have these columns. I want you to generate the data related to the column name. Use the appropriate data type: " + column_names + "I want you to generate " + str(number_of_rows) + " rows of data."} 
+                {"role": "system", "content": "You are a highly intelligent and helpful assistant. When a user requests data in a table(CSV) format, you should provide the response as a well-structured CSV file. Ensure that the CSV format includes appropriate headers and corresponding data rows, accurately reflecting the column names and data types specified by the user."},
+                {"role": "user", "content": "Please provide the response in CSV format. Inside the CSV format file, I want to have these columns with the specified data types and identity properties: " + column_names + ". The text inside the brackets next to the column names indicates the data type and identity properties (starting number, increment), but these are optional. If the data types and identity are not given, then choose the appropriate data types and identity. Generate the data according to the specified data types and identity properties where applicable. I want you to generate " + str(number_of_rows) + " rows of data. Ensure the data is realistic and appropriate for each column type."}
             ]
         )
         return completion.choices[0].message.content
@@ -81,7 +81,7 @@ def main() -> None:
     print("Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!")
 
     # Get the column names from the user
-    column_names = input("Enter the column names, separated by commas (e.g., name, age, email): ").strip()
+    column_names = input("Enter the column names, separated by commas. Include data types - optional, and Identity(starting_num, increment) - optional. (e.g., name(varchar), age(int, IDENTITY(1,1)), email): ").strip()
     if not column_names:
         logging.error("Column names cannot be empty.")
         return
