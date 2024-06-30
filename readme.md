@@ -60,6 +60,7 @@ CSV Generator is a Python-based tool that allows users to generate customized CS
 Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!
 
 Enter the column names, separated by commas. Include data types - optional, and Identity(starting_num, increment) - optional. (e.g., name(varchar), age(int, IDENTITY(1,1)), email): name(varchar), age(int), occupation(varchar)
+Provide some detail explanation of the data to get better results.: This file will be used to store customer data. This csv will be import to SSMS as a customer table.
 Enter the number of rows for the CSV file (e.g., 10): 5
 
 AI Response:
@@ -72,8 +73,8 @@ Emily Brown,39,Marketing Manager
 David Wilson,52,Accountant
 
 Do you want to save this as a CSV file? (y/n): y
-Enter the filename (default: output.csv): example_data.csv
-CSV file saved as example_data.csv
+Enter the filename (default: output.csv): customer.csv
+CSV file saved as customer.csv
 ```
 
 ## Error Handling
