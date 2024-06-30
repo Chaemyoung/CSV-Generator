@@ -32,7 +32,7 @@ if not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Get the ai reponse in csv file format
-def get_ai_response(column_names: str, number_of_rows: int) -> str:
+def get_ai_response(column_names: str, number_of_rows: int, user_explanation: str) -> str:
     """
     Get the AI response for the given column names and number of rows.
 
@@ -40,6 +40,7 @@ def get_ai_response(column_names: str, number_of_rows: int) -> str:
 
     :param column_names: The string, names of the columns in the CSV file
     :param number_of_rows: The int, number of rows to generate
+    :param user_explanation: The string, detail explanation of data to generate better result
     :precondition: column_names must be a string
     :precondition: number_of_rows must be an integer
     :postcondition: Get the AI response in CSV format
@@ -50,7 +51,7 @@ def get_ai_response(column_names: str, number_of_rows: int) -> str:
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a highly intelligent and helpful assistant. When a user requests data in a table(CSV) format, you should provide the response as a well-structured CSV file. Ensure that the CSV format includes appropriate headers and corresponding data rows, accurately reflecting the column names and data types specified by the user."},
-                {"role": "user", "content": "Please provide the response in CSV format. Inside the CSV format file, I want to have these columns with the specified data types and identity properties: " + column_names + ". The text inside the brackets next to the column names indicates the data type and identity properties (starting number, increment), but these are optional. If the data types and identity are not given, then choose the appropriate data types and identity. Generate the data according to the specified data types and identity properties where applicable. I want you to generate " + str(number_of_rows) + " rows of data. Ensure the data is realistic and appropriate for each column type."}
+                {"role": "user", "content": "Please provide the response in CSV format. Inside the CSV format file, I want to have these columns with the specified data types and identity properties: " + column_names + ". The text inside the brackets next to the column names indicates the data type and identity properties (starting number, increment), but these are optional. If the data types and identity are not given, then choose the appropriate data types and identity. Generate the data according to the specified data types and identity properties where applicable. This is the detailed explanation of the data that i want you to use it as a reference. However, do not rely on this. If it does not make sense, you don't have to listen to it." + str(user_explanation) + "I want you to generate " + str(number_of_rows) + " rows of data. Ensure the data is realistic and appropriate for each column type."}
             ]
         )
         return completion.choices[0].message.content
@@ -100,6 +101,9 @@ def main() -> None:
         logging.error(f"{RED}Column names cannot be empty.{RESET}")
         return
     
+    # Get the column names from the user
+    user_explanation = input(f"Provide {BLUE}{BOLD}some detail explanation {RESET}of the data to get better results:").strip()
+    
     # Get the number of rows from the user
     while True:
         number_of_rows = input(f"Enter {BLUE}{BOLD}the number of rows{RESET} for the CSV file (e.g., 10): ")
@@ -111,7 +115,7 @@ def main() -> None:
             print(f"{RED}Invalid input. Please enter a valid number.{RESET}")
 
     try:
-        response = get_ai_response(column_names, number_of_rows)
+        response = get_ai_response(column_names, number_of_rows, user_explanation)
     except RuntimeError as e:
         print(e)
         return
