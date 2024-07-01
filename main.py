@@ -134,7 +134,7 @@ def main() -> None:
     # Save the response as a CSV file        
     if save_choice.lower() == 'y':
         # Get the filename from the user
-        filename = str(input("Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
+        filename = str(input(f"Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
         save_as_csv(response, filename)
 
 
