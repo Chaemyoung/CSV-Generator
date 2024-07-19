@@ -95,48 +95,55 @@ def main() -> None:
     print(GREEN + art.program_title + RESET)
     print(f"\n{GREEN}Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!{RESET}")
 
-    # Get the column names from the user
-    column_names = input(f"Enter the {BLUE}{BOLD}column names, separated by commas{RESET}. Include {BLUE}{BOLD}data types - optional{RESET}, and {BLUE}{BOLD}Identity(starting_num, increment) - optional.{RESET} {CYAN}(e.g., name(varchar), age(int, IDENTITY(1,1)), email){RESET}:").strip()
-    if not column_names:
-        logging.error(f"{RED}Column names cannot be empty.{RESET}")
-        return
-    
-    # Get the column names from the user
-    user_explanation = input(f"Provide {BLUE}{BOLD}some detail explanation {RESET}of the data to get better results:").strip()
-    
-    # Get the number of rows from the user
     while True:
-        number_of_rows = input(f"Enter {BLUE}{BOLD}the number of rows{RESET} for the CSV file (e.g., 10): ")
-        # Check if the input is a valid number
-        if number_of_rows.isdigit():
-            number_of_rows = int(number_of_rows)
-            break
-        else:
-            print(f"{RED}Invalid input. Please enter a valid number.{RESET}")
-
-    try:
-        response = get_ai_response(column_names, number_of_rows, user_explanation)
-    except RuntimeError as e:
-        print(e)
-        return
+        # Get the column names from the user
+        column_names = input(f"Enter the {BLUE}{BOLD}column names, separated by commas{RESET}. Include {BLUE}{BOLD}data types - optional{RESET}, and {BLUE}{BOLD}Identity(starting_num, increment) - optional.{RESET} {CYAN}(e.g., name(varchar), age(int, IDENTITY(1,1)), email){RESET}: ").strip()
+        if not column_names:
+            logging.error(f"{RED}Column names cannot be empty.{RESET}")
+            return
         
-    print(f"{MAGENTA}\nAI Response:\n{RESET}")
-    print(response)
+        # Get the column names from the user
+        user_explanation = input(f"Provide {BLUE}{BOLD}some detail explanation {RESET}of the data to get better results: ").strip()
+        
+        # Get the number of rows from the user
+        while True:
+            number_of_rows = input(f"Enter {BLUE}{BOLD}the number of rows{RESET} for the CSV file (e.g., 10): ")
+            # Check if the input is a valid number
+            if number_of_rows.isdigit():
+                number_of_rows = int(number_of_rows)
+                break
+            else:
+                print(f"{RED}Invalid input. Please enter a valid number.{RESET}")
 
-    # Ask the user if they want to save the response as a CSV file
-    while True:
-        save_choice = input(f"{CYAN}{BOLD}\nDo you want to save this as a CSV file? (y/n): {RESET}").lower()
-        if save_choice in ['y', 'n']:
+        try:
+            response = get_ai_response(column_names, number_of_rows, user_explanation)
+        except RuntimeError as e:
+            print(e)
+            return
+            
+        print(f"{MAGENTA}\nAI Response:\n{RESET}")
+        print(response)
+
+        # Ask the user if they want to save the response as a CSV file
+        while True:
+            save_choice = input(f"{CYAN}{BOLD}\nDo you want to save this as a CSV file? (y/n): {RESET}").lower()
+            if save_choice in ['y', 'n']:
+                break
+            else:
+                print(f"{RED}Invalid input. Please enter 'y' or 'n'.{RESET}")
+
+        # Save the response as a CSV file        
+        if save_choice.lower() == 'y':
+            # Get the filename from the user
+            filename = str(input(f"Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
+            save_as_csv(response, filename)
+
+        # Ask the user if they want to continue
+        continue_choice = input(f"{CYAN}{BOLD}\nDo you want to generate another CSV file? (y/n): {RESET}").lower()
+        if continue_choice == 'n':
+            print(f"{GREEN}Thank you for using the CSV Generator. Goodbye!{RESET}")
             break
-        else:
-            print(f"{RED}Invalid input. Please enter 'y' or 'n'.{RESET}")
 
-    # Save the response as a CSV file        
-    if save_choice.lower() == 'y':
-        # Get the filename from the user
-        filename = str(input(f"Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
-        save_as_csv(response, filename)
-
-
+        
 if __name__ == "__main__":
     main()
