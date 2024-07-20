@@ -31,7 +31,10 @@ if not OPENAI_API_KEY:
 # Create an OpenAI client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# Get the ai reponse in csv file format
+# Initialize a list to store history of generated tables
+generated_tables = []
+
+# Get the AI response in CSV file format
 def get_ai_response(column_names: str, number_of_rows: int, user_explanation: str) -> str:
     """
     Get the AI response for the given column names and number of rows.
@@ -46,8 +49,12 @@ def get_ai_response(column_names: str, number_of_rows: int, user_explanation: st
     :postcondition: Get the AI response in CSV format
     :return: The AI response in CSV format
     """
+    history = "\n".join([f"Table: {table['name']}\nColumns: {', '.join(table['columns'])}\nRows:\n{table['data']}\n" for table in generated_tables])
     try:
         prompt = f"""
+        Previously generated tables:
+        {history}
+
         Please provide the response in CSV format. Inside the CSV format file, I want to have these columns with the specified data types and identity properties: {column_names}.
         The text inside the brackets next to the column names indicates the data type and identity properties (starting number, increment), but these are optional.
         If the data types and identity are not given, then choose the appropriate data types and identity.
@@ -71,18 +78,15 @@ def get_ai_response(column_names: str, number_of_rows: int, user_explanation: st
         return f"An error occurred: {str(e)}"
 
 
-# Function to save the response as a CSV file
-def save_as_csv(response: str, filename="output.csv") -> None:
+def save_as_csv_and_store(response: str, filename="output.csv") -> None:
     """
-    Save the response as a CSV file.
-
-    A function to save the response as a CSV file.
+    Save the response as a CSV file and store the table data.
 
     :param response: The string, the response to save
     :param filename: The string, the filename to save the response as (default: output.csv)
     :precondition: response must be a string
     :precondition: filename must be a string
-    :postcondition: Save the response as a CSV file
+    :postcondition: Save the response as a CSV file and store the table data
     :return: None
     """
     # Ensure the filename ends with .csv
@@ -91,11 +95,22 @@ def save_as_csv(response: str, filename="output.csv") -> None:
 
     try:
         lines = response.strip().split('\n')
+        header = lines[0].split(',')
+        data = "\n".join(lines[1:])
+        
         with open(filename, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            for line in lines:
-                writer.writerow(line.split(','))
+            writer.writerow(header)
+            writer.writerows([line.split(',') for line in lines[1:]])
+        
         print(f"CSV file saved as {YELLOW}{BOLD}{filename}{RESET}")
+        
+        # Store the generated table data
+        generated_tables.append({
+            "name": filename,
+            "columns": header,
+            "data": data
+        })
     except Exception as e:
         logging.error(f"{RED}Error saving file: {str(e)}{RESET}")
 
@@ -107,14 +122,20 @@ def main() -> None:
     print(f"\n{GREEN}Hello, welcome to the CSV Generator! This tool will help you create a CSV file based on your specified columns and number of rows. Let's get started!{RESET}")
 
     while True:
+        # Display previously generated tables
+        if generated_tables:
+            print(f"\n{CYAN}{BOLD}Previously generated tables:{RESET}")
+            for table in generated_tables:
+                print(f"{YELLOW}{table['name']}{RESET}: {', '.join(table['columns'])}")
+        
         # Get the column names from the user
         column_names = input(f"Enter the {BLUE}{BOLD}column names, separated by commas{RESET}. Include {BLUE}{BOLD}data types - optional{RESET}, and {BLUE}{BOLD}Identity(starting_num, increment) - optional.{RESET} {CYAN}(e.g., name(varchar), age(int, IDENTITY(1,1)), email){RESET}: ").strip()
         if not column_names:
             logging.error(f"{RED}Column names cannot be empty.{RESET}")
             return
         
-        # Get the column names from the user
-        user_explanation = input(f"Provide {BLUE}{BOLD}some detail explanation {RESET}of the data to get better results: ").strip()
+        # Get the user explanation from the user
+        user_explanation = input(f"Provide {BLUE}{BOLD}some detailed explanation {RESET}of the data to get better results: ").strip()
         
         # Get the number of rows from the user
         while True:
@@ -143,11 +164,11 @@ def main() -> None:
             else:
                 print(f"{RED}Invalid input. Please enter 'y' or 'n'.{RESET}")
 
-        # Save the response as a CSV file        
+        # Save the response as a CSV file and store the table data
         if save_choice.lower() == 'y':
             # Get the filename from the user
             filename = str(input(f"Enter the {BLUE}{BOLD}filename{RESET} (default: output.csv): ")).strip() or "output.csv"
-            save_as_csv(response, filename)
+            save_as_csv_and_store(response, filename)
 
         # Ask the user if they want to continue
         continue_choice = input(f"{CYAN}{BOLD}\nDo you want to generate another CSV file? (y/n): {RESET}").lower()
@@ -155,6 +176,5 @@ def main() -> None:
             print(f"{GREEN}Thank you for using the CSV Generator. Goodbye!{RESET}")
             break
 
-        
 if __name__ == "__main__":
     main()
